@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/velocity.min.js"></script>
+    <script src="js/lodash.min.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/Cloth.js"></script>
+</head>
+<body>
+<div style="text-align: center" id="sudoku-demo" class="demo">
+    <h1>Sudoku</h1>
+    <button @click="shuffle">
+        Shuffle
+    </button>
+    <transition-group name="cell" tag="div" class="container">
+        <div v-for="cell in cells" :key="cell.id" class="cell">
+            {{ cell.number }}
+        </div>
+    </transition-group>
+</div>
+
+<hr/>
+
+<div style="text-align: center">
+    <h1>Searching</h1>
+    <div id="staggered-list-demo">
+        <input v-model="query">
+        <transition-group name="staggered-fade" tag="ul" v-bind:css="false" v-on:before-enter="beforeEnter"
+                          v-on:enter="enter" v-on:leave="leave">
+            <li v-for="(item, index) in computedList" v-bind:key="item.msg" v-bind:data-index="index">{{ item.msg }}
+            </li>
+        </transition-group>
+    </div>
+</div>
+
+<canvas id="c"></canvas>
+<script>
+    new Vue({
+        el: '#sudoku-demo',
+        data: {
+            cells: Array.apply(null, {length: 80})
+                .map(function (_, index) {
+                    return {
+                        id: index,
+                        number: index % 9 + 1
+                    }
+                })
+        },
+        methods: {
+            shuffle: function () {
+                this.cells = _.shuffle(this.cells)
+            }
+        }
+    })
+    new Vue({
+        el: '#staggered-list-demo',
+        data: {
+            query: '',
+            list: [
+                {msg: 'Bruce Lee'},
+                {msg: 'Jackie Chan'},
+                {msg: 'Chuck Norris'},
+                {msg: 'Jet Li'},
+                {msg: 'Kung Fury'}
+            ]
+        },
+        computed: {
+            computedList: function () {
+                var vm = this
+                return this.list.filter(function (item) {
+                    return item.msg.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1
+                })
+            }
+        },
+        methods: {
+            beforeEnter: function (el) {
+                el.style.opacity = 0
+                el.style.height = 0
+            },
+            enter: function (el, done) {
+                var delay = el.dataset.index * 150
+                setTimeout(function () {
+                    Velocity(
+                        el,
+                        {opacity: 1, height: '1.6em'},
+                        {complete: done}
+                    )
+                }, delay)
+            },
+            leave: function (el, done) {
+                var delay = el.dataset.index * 150
+                setTimeout(function () {
+                    Velocity(
+                        el,
+                        {opacity: 0, height: 0},
+                        {complete: done}
+                    )
+                }, delay)
+            }
+        }
+    })
+</script>

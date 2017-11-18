@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>iview example</title>
+    <link rel="stylesheet" type="text/css" href="css/iview.css">
+    <script type="text/javascript" src="js/vue.min.js"></script>
+    <script type="text/javascript" src="js/iview.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="text-align: center">
+        <h1>Model Open</h1>
+        <i-button @click="show" class="ivu-btn-success">Click me!</i-button>
+        <Modal v-model="visible" title="Welcome">Hello</Modal>
+        <h1>Date Picker</h1>
+        <Date-picker style="text-align: center" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="yyyy-MM-dd HH:mm" style="width: 200px"></Date-picker>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            visible: false,
+        },
+        methods: {
+            show: function () {
+                this.visible = true;
+            }
+        }
+    })
+</script>
+</body>
+</html>

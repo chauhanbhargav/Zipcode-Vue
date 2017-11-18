@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zipcode Search</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1 class="text-center">Search Your Zipcode</h1>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <input required class="form-control" type="text" v-model="code">
+            <span class="city-span">{{result}} </span>
+            <span>{{ city }}</span>
+        </div>
+    </div>
+</div>
+</body>
+<script src="js/axios.min.js"></script>
+<script src="js/lodash.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'You are here....... ',
+            fname: '123456',
+            show: true,
+            title: new Date(),
+            url: "https://vuejs.org/images/logo.png",
+            todos: [
+                {text: "Hello", id: "1"},
+                {text: "this is an", id: "2"},
+                {text: "Array", id: "3"}
+            ],
+            count: 0,
+            code: '',
+            result: '',
+            city: ''
+        },
+        watch: {
+            code: function () {
+                this.result = '';
+                if (this.code.length == 5) {
+                    this.lookupCode()
+                }
+            }
+        },
+        methods: {
+            up: function () {
+                this.count += 1;
+            },
+            down: function () {
+                this.count -= 1;
+            },
+            lookupCode: _.debounce(function () {
+                var app = this;
+                app.result = "Searching...";
+
+                //  Indian Zipcode API link
+                //  http://postalpincode.in/api/pincode/382443
+                axios.get('http://ziptasticapi.com/' + this.code)
+                    .then(function (response) {
+                        if (response.data.city == undefined) {
+                            app.result = 'Invalid Zipcode';
+                        } else {
+                            app.result = response.data.city + " , " + response.data.state + " , " + response.data.country;
+                        }
+                    })
+                    .catch(function (error) {
+                        app.result = "Invalid Zipcode"
+                    })
+            }, 500)
+        }
+    })
+</script>
+</html>
